@@ -1,0 +1,10 @@
+{
+    "manager":{
+        "host":"",
+        "port":8083
+    },
+    "handler":{
+        "host":"",
+        "port":8082
+    }
+}
