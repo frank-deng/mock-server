@@ -4,7 +4,7 @@
   "description": "A mock server implemented in NodeJS.",
   "main": "index.js",
   "scripts": {
-    "start":"node ./index.js",
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -12,5 +12,8 @@
     "server"
   ],
   "author": "Frank Deng",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "node-watch": "^0.7.2"
+  }
 }
