@@ -1,16 +1,10 @@
 const DataHander=require('./dataHandler');
+const MockHandler=require('./mockHandler');
+const MockManager=require('./mockManager');
 module.exports=class{
     constructor(){
-        let config={};
-        try{
-            config=require('./config.json');
-            DataHander.init(config.database);
-        }catch(e){
-            console.log(e);
-            process.exit(1);
-        }
-        const MockHandler=require('./mockHandler');
-        const MockManager=require('./mockManager');
+        let config=require('./config.json');
+        DataHander.init(config.database);
         this.mockHandler=new MockHandler(config.handler.host,config.handler.port);
         this.mockManager=new MockManager(config.manager.host,config.manager.port);
         Promise.all([

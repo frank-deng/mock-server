@@ -1,5 +1,6 @@
 function start(){
-    return new (require('./server/index'))();
+    const Server=require('./server/index');
+    return new Server();
 }
 let app=start();
 try{
@@ -12,6 +13,13 @@ try{
             if('update'!=event){
                 return;
             }
+            //重启应用
+            console.log('Closing server');
+            try{
+                app.close();
+            }catch(e){
+                console.error(e);
+            }
     
             //清空require.cache
             for(const item of Object.keys(require.cache)){
@@ -19,13 +27,14 @@ try{
             }
 
             //重启应用
-            console.log('Restarting server');
-            try{
-                app.close();
-                app=start();
-            }catch(e){
-                console.error(e);
-            }
+            process.nextTick(()=>{
+                console.log('Starting server');
+                try{
+                    app=start();
+                }catch(e){
+                    console.error(e);
+                }
+            });
         });
     }
 }catch(e){

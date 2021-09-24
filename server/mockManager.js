@@ -10,10 +10,20 @@ module.exports=class extends httpServer{
             '/list':this.listHandler
         };
     }
+    setCommonHeader(response){
+        response.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+        response.setHeader('Access-Control-Allow-Origin', '*');
+        response.setHeader('Access-Control-Allow-Headers','content-type');
+    }
     addHandler=async({path,body,request,response})=>{
+        this.setCommonHeader(response);
+        if('OPTIONS'==request.method){
+            response.writeHead(200);
+            response.end();
+            return;
+        }
         let db=DB.get();
-        console.log('请求内容',JSON.parse(body));
-        //db.add();
+        db.add(JSON.parse(body));
         response.setHeader('content-type', 'application/json; charset=utf-8');
         response.end(JSON.stringify({
             code:0,

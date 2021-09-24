@@ -4,9 +4,9 @@
   "description": "A mock server implemented in NodeJS.",
   "main": "index.js",
   "scripts": {
-    "start": "vite",
-    "init": "node ./init.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./server.js",
+    "start-client": "vite",
+    "init": "node ./init.js"
   },
   "keywords": [
     "mock",

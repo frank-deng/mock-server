@@ -13,7 +13,17 @@ class DataHandler{
         return value+1;
     }
     add(data){
+        console.log(data);
         this.__db.prepare(`insert into ${DataHandler.TABLE_NAME} (
+            id,
+            enabled,
+            match_type,
+            matcher,
+            resp_type,
+            resp_code,
+            resp_header,
+            resp_content
+        ) VALUES (
             @id,
             @enabled,
             @match_type,
@@ -22,10 +32,11 @@ class DataHandler{
             @resp_code,
             @resp_header,
             @resp_content
-        )` ).bind({
+        )` ).run({
             ...data,
-            id:this.newId()
-        }).run();
+            id:this.newId(),
+            enabled: data.enabled ? 1 : 0
+        });
     }
     delete(id){
         this.__db.prepare(`delete from ${DataHandler.TABLE_NAME} where id=@id`).bind({

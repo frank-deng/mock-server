@@ -5,7 +5,7 @@ import addItem from '@/views/addItem.vue';
 const routes=[
     {
         path:"/",
-        component:mainPage
+        component:addItem
     },
     {
         path:"/add",
