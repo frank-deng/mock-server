@@ -6,5 +6,8 @@
     "handler":{
         "host":"",
         "port":8082
+    },
+    "database":{
+        "file":"mock-server.db"
     }
 }

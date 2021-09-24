@@ -1,12 +1,12 @@
 function start(){
-    return new (require('./src/index'))();
+    return new (require('./server/index'))();
 }
 let app=start();
 try{
     const path=require('path');
     const watch = require('node-watch');
     if(watch){
-        watch('./src', {
+        watch('./server', {
             recursive: true
         }, function(event, fileName) {
             //跳过不在当前目录中的文件，非JS文件
@@ -21,8 +21,12 @@ try{
 
             //重启应用
             console.log('Restarting server');
-            app.close();
-            app=start();
+            try{
+                app.close();
+                app=start();
+            }catch(e){
+                console.error(e);
+            }
         });
     }
 }catch(e){

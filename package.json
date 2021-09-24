@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
+    "init": "node ./init.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -14,6 +15,7 @@
   "author": "Frank Deng",
   "license": "MIT",
   "dependencies": {
+    "better-sqlite3": "^7.4.3",
     "node-watch": "^0.7.2"
   }
 }

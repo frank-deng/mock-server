@@ -1,5 +1,5 @@
 const httpServer=require('./httpServer');
-const url=require('url');
+const DB=require('./dataHandler');
 module.exports=class extends httpServer{
     constructor(host,port){
         super(host,port);
@@ -10,13 +10,15 @@ module.exports=class extends httpServer{
             '/list':this.listHandler
         };
     }
-    addHandler=async(path,request,response)=>{
-        response.set({ 'content-type': 'application/json; charset=utf-8'});
-        response.write(JSON.stringify({
+    addHandler=async({path,body,request,response})=>{
+        let db=DB.get();
+        console.log('请求内容',JSON.parse(body));
+        //db.add();
+        response.setHeader('content-type', 'application/json; charset=utf-8');
+        response.end(JSON.stringify({
             code:0,
             message:'添加条目成功'
         }));
-        response.end();
         console.log('添加条目');
     }
     deleteHandler=async(path,request,response)=>{

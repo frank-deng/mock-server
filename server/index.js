@@ -1,8 +1,10 @@
+const DataHander=require('./dataHandler');
 module.exports=class{
     constructor(){
         let config={};
         try{
             config=require('../config.json');
+            DataHander.init(config.database);
         }catch(e){
             console.log(e);
             process.exit(1);
@@ -22,5 +24,6 @@ module.exports=class{
     close(){
         this.mockHandler.close();
         this.mockManager.close();
+        DataHander.close();
     }
 }

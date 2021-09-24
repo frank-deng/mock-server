@@ -23,8 +23,7 @@ module.exports=class{
         }catch(e){
             console.error(e);
             response.writeHead(500);
-            response.write(e.toString());
-            response.end();
+            response.end(e.toString());
         }
     }
     async handler(request,response){
@@ -33,11 +32,23 @@ module.exports=class{
         const func=this.route[path];
         if('function'!=typeof(func)){
             response.writeHead(404);
-            response.write('404 Not Found');
-            response.end();
+            response.end('404 Not Found.');
             return;
         }
-        await func(path,request,response);
+
+        let body=null;
+        if('POST'==request.method){
+            body=await new Promise((resolve)=>{
+                let postBody='';
+                request.on('data',(chunk)=>{
+                    postBody+=chunk;
+                });
+                request.on("end", function(){
+                    resolve(postBody);
+                });
+            });
+        }
+        await func({path,body,request,response});
     }
     start(){
         return new Promise((resolve)=>{
