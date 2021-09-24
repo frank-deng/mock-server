@@ -3,7 +3,7 @@ module.exports=class{
     constructor(){
         let config={};
         try{
-            config=require('../config.json');
+            config=require('./config.json');
             DataHander.init(config.database);
         }catch(e){
             console.log(e);

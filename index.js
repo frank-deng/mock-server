@@ -3,7 +3,6 @@ function start(){
 }
 let app=start();
 try{
-    const path=require('path');
     const watch = require('node-watch');
     if(watch){
         watch('./server', {
