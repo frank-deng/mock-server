@@ -13,7 +13,6 @@ class DataHandler{
         return value+1;
     }
     add(data){
-        console.log(data);
         this.__db.prepare(`insert into ${DataHandler.TABLE_NAME} (
             id,
             enabled,
@@ -38,12 +37,35 @@ class DataHandler{
             enabled: data.enabled ? 1 : 0
         });
     }
-    delete(id){
-        this.__db.prepare(`delete from ${DataHandler.TABLE_NAME} where id=@id`).bind({
+    update(id,data){
+        this.__db.prepare(`update ${DataHandler.TABLE_NAME} set
+            enabled=@enabled,
+            match_type=@match_type,
+            matcher=@matcher,
+            resp_type=@resp_type,
+            resp_code=@resp_code,
+            resp_header=@resp_header,
+            resp_content=@resp_content
+            where id=@id`).run({
             ...data,
-            id:this.newId()
-        }).run();
-
+            enabled: data.enabled ? 1 : 0,
+            id
+        });
+    }
+    delete(id){
+        let info=this.__db.prepare(`delete from ${DataHandler.TABLE_NAME} where id=@id`).run({
+            id
+        });
+        return info.changes;
+    }
+    list(pageNum=0,pageSize=10){
+        return {
+            total:this.__db.prepare(`select count(id) as total from ${DataHandler.TABLE_NAME}`).get()['total'],
+            data:this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} limit @pageSize offset @offset`).all({
+                pageSize,
+                offset:pageSize*pageNum
+            })
+        };
     }
     close(){
         this.__db.close();

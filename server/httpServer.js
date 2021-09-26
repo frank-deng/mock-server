@@ -26,10 +26,11 @@ module.exports=class{
             response.end(e.toString());
         }
     }
+    beforeRequest(){}
+    afterRequest(){}
     async handler(request,response){
-        const urlParsed=url.parse(request.url, true);
-        const path=urlParsed.pathname;
-        const func=this.route[path];
+        const path=url.parse(request.url, true);
+        const func=this.route[path.pathname];
         if('function'!=typeof(func)){
             response.writeHead(404);
             response.end('404 Not Found.');
@@ -48,7 +49,16 @@ module.exports=class{
                 });
             });
         }
-        await func({path,body,request,response});
+        await this.beforeRequest({path,body,request,response});
+        if(response.writableFinished){
+            return;
+        }
+        let data=await func({path,body,request,response});
+        await this.afterRequest({path,body,request,response});
+        if(!response.writableFinished && undefined!==data){
+            let resp= 'object'==typeof(data) ? JSON.stringify(data,null,2) : String(data);
+            response.end(resp);
+        }
     }
     start(){
         return new Promise((resolve)=>{
