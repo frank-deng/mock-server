@@ -25,7 +25,7 @@
 </template>
 <script setup>
 import { reactive } from "@vue/reactivity";
-import {addItem} from '@/api/add.js';
+import {addItem} from '@/api/main.js';
 
 const state=reactive({
     enabled:false,

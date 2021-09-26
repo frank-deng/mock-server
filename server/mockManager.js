@@ -78,6 +78,10 @@ module.exports=class extends httpServer{
     listHandler=async({path,body,request,response})=>{
         let pageSize=path.query.pageSize || 10,
             pageNum=path.query.pageNum || 0;
-        return DB.get().list(pageNum,pageSize);
+        return {
+            ...DB.get().list(pageNum,pageSize),
+            message:'success',
+            code:0
+        };
     }
 }
