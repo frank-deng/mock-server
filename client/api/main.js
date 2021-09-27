@@ -11,6 +11,11 @@ export async function deleteItem(id){
         }
     });
 }
+export async function updateItem(data){
+    return await request.post(`update`,{
+        ...data
+    });
+}
 export async function queryItem(data){
     return await request.post(`list`,{
         pageNum:data.pageNum,

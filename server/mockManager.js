@@ -53,17 +53,8 @@ module.exports=class extends httpServer{
         }
     }
     updateHandler=async({path,body,request,response})=>{
-        let id=path.query.id;
-        if(undefined===id){
-            response.write(JSON.stringify({
-                code:1,
-                message:'未指定条目'
-            }));
-            response.end();
-            return;
-        }
-        let db=DB.get();
-        if(!db.update(id,JSON.parse(body))){
+        let db=DB.get(), data=JSON.parse(body);
+        if(!db.update(data.id,data)){
             return {
                 code:2,
                 message:'更新条目失败'

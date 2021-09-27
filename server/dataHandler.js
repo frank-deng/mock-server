@@ -13,7 +13,7 @@ class DataHandler{
         return value+1;
     }
     add(data){
-        this.__db.prepare(`insert into ${DataHandler.TABLE_NAME} (
+        let info=this.__db.prepare(`insert into ${DataHandler.TABLE_NAME} (
             id,
             enabled,
             match_type,
@@ -36,9 +36,10 @@ class DataHandler{
             id:this.newId(),
             enabled: data.enabled ? 1 : 0
         });
+        return info.changes;
     }
     update(id,data){
-        this.__db.prepare(`update ${DataHandler.TABLE_NAME} set
+        let info=this.__db.prepare(`update ${DataHandler.TABLE_NAME} set
             enabled=@enabled,
             match_type=@match_type,
             matcher=@matcher,
@@ -51,6 +52,7 @@ class DataHandler{
             enabled: data.enabled ? 1 : 0,
             id
         });
+        return info.changes;
     }
     delete(id){
         let info=this.__db.prepare(`delete from ${DataHandler.TABLE_NAME} where id=@id`).run({
