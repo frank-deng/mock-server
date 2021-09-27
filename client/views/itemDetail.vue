@@ -87,11 +87,13 @@ async function doSubmit(){
     let resp=null;
     if(controller.editMode){
         resp=await updateItem({
-            ...state
+            ...state,
+            resp_header:''
         });
     }else{
         resp=await addItem({
-            ...state
+            ...state,
+            resp_header:''
         });
     }
     if(0!=Number(resp.data.code)){
