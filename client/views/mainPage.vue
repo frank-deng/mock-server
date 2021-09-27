@@ -17,6 +17,10 @@
             </template>
         </el-table-column>
     </el-table>
+    <el-pagination layout="prev, pager, next"
+        :total="tableData.total"
+        @current-change="pageNumChange"
+        @size-change="pageSizeChange"></el-pagination>
     <itemDetail :ref='$refs.itemDetail'></itemDetail>
 </template>
 <script setup>
@@ -35,6 +39,14 @@ const tableData=reactive({
     pageNum:0,
     pageSize:10
 });
+function pageNumChange(pageNum){
+    tableData.pageNum=pageNum;
+    query();
+}
+function pageSizeChange(pageSize){
+    tableData.pageSize=pageSize;
+    query();
+}
 async function query(){
     let resp=await queryItem(tableData.pageNum,tableData.pageSize);
     Object.assign(tableData,{
