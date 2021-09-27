@@ -2,7 +2,11 @@
     <el-table :data='tableData.data'>
         <el-table-column prop='matcher' label='匹配规则'></el-table-column>
         <el-table-column prop='match_type' label='正则匹配'></el-table-column>
-        <el-table-column prop='enabled' label='是否启用'></el-table-column>
+        <el-table-column prop='enabled' label='是否启用'>
+            <template #default='{row}'>
+                <el-checkbox v-model='row.enabled' :true-label="true" :false-label="false" @change='doUpdateEnabled(row)'></el-checkbox>
+            </template>
+        </el-table-column>
         <el-table-column>
             <template #header>
                 <el-button @click='doAddItem()'>添加</el-button>
@@ -18,7 +22,7 @@
 <script setup>
 import { ElMessageBox,ElMessage } from 'element-plus';
 import { reactive, ref } from "@vue/reactivity";
-import {queryItem,deleteItem} from '@/api/main.js';
+import {queryItem,deleteItem,updateItemEnabled} from '@/api/main.js';
 import itemDetail from './itemDetail.vue';
 
 const $refs={
@@ -74,6 +78,18 @@ async function doDeleteItem(id){
             return;
         }
         console.error(e);
+    }
+}
+async function doUpdateEnabled(row){
+    try{
+        let resp=await updateItemEnabled(row.id,row.enabled);
+        if(0!=resp.data.code){
+            ElMessage.error(resp.data.message);
+            query();
+        }
+    }catch(e){
+        console.error(e);
+        query();
     }
 }
 query();

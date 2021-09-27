@@ -54,6 +54,15 @@ class DataHandler{
         });
         return info.changes;
     }
+    updateEnabled(id,enabled){
+        let info=this.__db.prepare(`update ${DataHandler.TABLE_NAME} set
+            enabled=@enabled
+            where id=@id`).run({
+            enabled: enabled ? 1 : 0,
+            id
+        });
+        return info.changes;
+    }
     delete(id){
         let info=this.__db.prepare(`delete from ${DataHandler.TABLE_NAME} where id=@id`).run({
             id
@@ -66,7 +75,10 @@ class DataHandler{
             data:this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} limit @pageSize offset @offset`).all({
                 pageSize,
                 offset:pageSize*pageNum
-            })
+            }).map((item)=>({
+                ...item,
+                enabled: item.enabled ? true : false
+            }))
         };
     }
     close(){

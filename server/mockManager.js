@@ -7,7 +7,8 @@ module.exports=class extends httpServer{
             '/add':this.addHandler,
             '/delete':this.deleteHandler,
             '/update':this.updateHandler,
-            '/list':this.listHandler
+            '/list':this.listHandler,
+            '/updateItemEnabled':this.updateItemEnabled,
         };
     }
     beforeRequest({path,body,request,response}){
@@ -55,6 +56,20 @@ module.exports=class extends httpServer{
     updateHandler=async({path,body,request,response})=>{
         let db=DB.get(), data=JSON.parse(body);
         if(!db.update(data.id,data)){
+            return {
+                code:2,
+                message:'更新条目失败'
+            };
+        }else{
+            return {
+                code:0,
+                message:'更新条目成功'
+            };
+        }
+    }
+    updateItemEnabled=async({path,body,request,response})=>{
+        let db=DB.get(), id=path.query.id, enabled=Number(path.query.enabled);
+        if(!db.updateEnabled(id,enabled)){
             return {
                 code:2,
                 message:'更新条目失败'

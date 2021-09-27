@@ -16,6 +16,14 @@ export async function updateItem(data){
         ...data
     });
 }
+export async function updateItemEnabled(id,enabled){
+    return await request.get(`updateItemEnabled`,{
+        params:{
+            id,
+            enabled: enabled ? 1 : 0
+        }
+    });
+}
 export async function queryItem(data){
     return await request.post(`list`,{
         pageNum:data.pageNum,
