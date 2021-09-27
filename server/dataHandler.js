@@ -81,26 +81,66 @@ class DataHandler{
             }))
         };
     }
+    listAll(){
+        return this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} where enabled=1`).all();
+    }
     close(){
         this.__db.close();
     }
 }
-let instance=null;
+class DataCache{
+    __exactMatch={};
+    __regexpMatch=[];
+    update(data){
+        this.__exactMatch={};
+        this.__regexpMatch=[];
+        for(let item of data){
+            switch(item.match_type){
+                case 0:
+                    this.__exactMatch[item.matcher]=item;
+                break;
+                case 1:
+                    this.__regexpMatch.push(item);
+                break;
+            }
+        }
+    }
+    getAll(){
+        return{
+            exact:this.__exactMatch,
+            regexp:this.__regexpMatch
+        }
+    }
+    close(){
+    }
+}
+let instance=null, cache=null;
 module.exports=class{
     static init(config={}){
         if(instance){
             throw Error('Data handler already started');
         }
         instance=new DataHandler(config);
+        if(cache){
+            throw Error('Data handler already started');
+        }
+        cache=new DataCache();
+        cache.update(instance.listAll());
     }
     static get(){
         return instance;
     }
+    static getCache(){
+        return cache;
+    }
     static close(){
-        if(!instance){
-            return;
+        if(instance){
+            instance.close();
+            instance=null;
         }
-        instance.close();
-        instance=null;
+        if(cache){
+            cache.close();
+            cache=null;
+        }
     }
 }

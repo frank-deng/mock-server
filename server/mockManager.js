@@ -25,6 +25,7 @@ module.exports=class extends httpServer{
     addHandler=async({body,request,response})=>{
         let db=DB.get();
         db.add(JSON.parse(body));
+        DB.getCache().update(db.listAll());
         response.end(JSON.stringify({
             code:0,
             message:'添加条目成功'
@@ -47,6 +48,7 @@ module.exports=class extends httpServer{
                 message:'删除条目失败'
             };
         }else{
+            DB.getCache().update(db.listAll());
             return {
                 code:0,
                 message:'删除条目成功'
@@ -61,6 +63,7 @@ module.exports=class extends httpServer{
                 message:'更新条目失败'
             };
         }else{
+            DB.getCache().update(db.listAll());
             return {
                 code:0,
                 message:'更新条目成功'
@@ -75,6 +78,7 @@ module.exports=class extends httpServer{
                 message:'更新条目失败'
             };
         }else{
+            DB.getCache().update(db.listAll());
             return {
                 code:0,
                 message:'更新条目成功'
