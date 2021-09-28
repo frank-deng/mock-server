@@ -26,25 +26,44 @@ module.exports=class extends httpServer{
                 response.end('404 Not Found');
                 return;
             }
-            const headers={
+
+            //检测内容是否为JSON
+            let isJSON=false;
+            try{
+                JSON.parse(matched.resp_content);
+                isJSON=true;
+            }catch(e){}
+
+            //准备默认的返回头，包括跨域操作
+            let headers={
                 'Access-Control-Allow-Methods':request.method,
                 'Access-Control-Allow-Origin':'*',
                 'Access-Control-Allow-Headers':null
             };
-            let allowHeaders=[];
+            let allowHeaders={};
             for(let item of matched.resp_header){
                 try{
                     if(headers[item.key] || !item.key){
                         continue;
                     }
-                    allowHeaders.push(item.key);
+                    allowHeaders[item.key]=true;
                 }catch(e){
                     console.error(e);
                 }
             }
-            if(allowHeaders.length){
-                headers['Access-Control-Allow-Headers']=allowHeaders.join(',');
+            
+            //JSON内容相关的默认header加上
+            if(isJSON){
+                headers['content-type']='application/json; encoding=UTF-8';
+                allowHeaders['content-type']=true;
             }
+
+            //跨域相关header加上
+            if(Object.keys(allowHeaders).length){
+                headers['Access-Control-Allow-Headers']=Object.keys(allowHeaders).join(',');
+            }
+
+            //取出要设置的返回头，可覆盖默认的返回头
             for(let item of matched.resp_header){
                 try{
                     if(!item.key || !item.value){
@@ -55,6 +74,7 @@ module.exports=class extends httpServer{
                     console.error(e);
                 }
             }
+            //值为空的返回头项目去掉
             for(let key in headers){
                 if(!headers[key]){
                     continue;
