@@ -18,7 +18,7 @@ module.exports=class extends httpServer{
                 }
             }
             if(!matched){
-                response.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+                response.setHeader('Access-Control-Allow-Methods', request.method);
                 response.setHeader('Access-Control-Allow-Origin', '*');
                 response.setHeader('Access-Control-Allow-Headers','content-type');
                 response.setHeader('content-type', 'text/plain; charset=utf-8');
@@ -26,13 +26,42 @@ module.exports=class extends httpServer{
                 response.end('404 Not Found');
                 return;
             }
-            // response 对象有一个方法：write 可以用来给客户端发送响应数据
-            // write 可以使用多次，但是最后一定要使用 end 来结束响应，否则客户端会一直等待
-            //根据返回类型决定返回内容
-            response.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
-            response.setHeader('Access-Control-Allow-Origin', '*');
-            response.setHeader('Access-Control-Allow-Headers','content-type');
-            response.setHeader('content-type', 'application/json; charset=utf-8');
+            const headers={
+                'Access-Control-Allow-Methods':request.method,
+                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Headers':null
+            };
+            let allowHeaders=[];
+            for(let item of matched.resp_header){
+                try{
+                    if(headers[item.key] || !item.key){
+                        continue;
+                    }
+                    allowHeaders.push(item.key);
+                }catch(e){
+                    console.error(e);
+                }
+            }
+            if(allowHeaders.length){
+                headers['Access-Control-Allow-Headers']=allowHeaders.join(',');
+            }
+            for(let item of matched.resp_header){
+                try{
+                    if(!item.key || !item.value){
+                        continue;
+                    }
+                    headers[item.key]=item.value;
+                }catch(e){
+                    console.error(e);
+                }
+            }
+            for(let key in headers){
+                if(!headers[key]){
+                    continue;
+                }
+                response.setHeader(key,headers[key]);
+            }
+            response.writeHead(matched.resp_code);
             response.end(matched.resp_content);
         }catch(e){
             console.error(e);

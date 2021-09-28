@@ -34,6 +34,7 @@ class DataHandler{
         )` ).run({
             ...data,
             id:this.newId(),
+            resp_header:JSON.stringify(resp_header),
             enabled: data.enabled ? 1 : 0
         });
         return info.changes;
@@ -49,6 +50,7 @@ class DataHandler{
             resp_content=@resp_content
             where id=@id`).run({
             ...data,
+            resp_header:JSON.stringify(data.resp_header),
             enabled: data.enabled ? 1 : 0,
             id
         });
@@ -75,14 +77,35 @@ class DataHandler{
             data:this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} limit @pageSize offset @offset`).all({
                 pageSize,
                 offset:pageSize*pageNum
-            }).map((item)=>({
-                ...item,
-                enabled: item.enabled ? true : false
-            }))
+            }).map((item)=>{
+                let resp_header=[];
+                try{
+                    resp_header=JSON.parse(item.resp_header);
+                }catch(e){
+                    console.error(e);
+                }
+                return{
+                    ...item,
+                    resp_header,
+                    enabled: item.enabled ? true : false
+                };
+            })
         };
     }
     listAll(){
-        return this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} where enabled=1`).all();
+        return this.__db.prepare(`select * from ${DataHandler.TABLE_NAME} where enabled=1`).all().map((item)=>{
+            let resp_header=[];
+            try{
+                resp_header=JSON.parse(item.resp_header);
+            }catch(e){
+                console.error(e);
+            }
+            return{
+                ...item,
+                resp_header,
+                enabled: item.enabled ? true : false
+            };
+        });
     }
     close(){
         this.__db.close();

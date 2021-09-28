@@ -1,19 +1,21 @@
 <template>
-    <el-table :data='tableData.data'>
+    <el-table :data='tableData.data' size='mini'>
         <el-table-column prop='matcher' label='匹配规则'></el-table-column>
-        <el-table-column prop='match_type' label='正则匹配'></el-table-column>
-        <el-table-column prop='enabled' label='是否启用'>
+        <el-table-column :width='100' prop='match_type' label='正则匹配' align='center'>
+            <template #default='{row}'>{{row.match_type ? '是' : '否'}}</template>
+        </el-table-column>
+        <el-table-column :width='100' prop='enabled' label='是否启用' align='center'>
             <template #default='{row}'>
                 <el-checkbox v-model='row.enabled' :true-label="true" :false-label="false" @change='doUpdateEnabled(row)'></el-checkbox>
             </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column :width='100' align='center'>
             <template #header>
-                <el-button @click='doAddItem()'>添加</el-button>
+                <el-link type='primary' @click='doAddItem()'>添加</el-link>
             </template>
             <template #default='{row}'>
-                <el-button @click='doEditItem(row)'>编辑</el-button>
-                <el-button @click='doDeleteItem(row.id)'>删除</el-button>
+                <el-link type='primary' @click='doEditItem(row)'>编辑</el-link>&nbsp;
+                <el-link type='danger' @click='doDeleteItem(row.id)'>删除</el-link>
             </template>
         </el-table-column>
     </el-table>
