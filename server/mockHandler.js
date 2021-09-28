@@ -30,8 +30,10 @@ module.exports=class extends httpServer{
             //检测内容是否为JSON
             let isJSON=false;
             try{
-                JSON.parse(matched.resp_content);
-                isJSON=true;
+                if(matched.resp_content){
+                    JSON.parse(matched.resp_content);
+                    isJSON=true;
+                }
             }catch(e){}
 
             //准备默认的返回头，包括跨域操作

@@ -81,9 +81,7 @@ class DataHandler{
                 let resp_header=[];
                 try{
                     resp_header=JSON.parse(item.resp_header);
-                }catch(e){
-                    console.error(e);
-                }
+                }catch(e){}
                 return{
                     ...item,
                     resp_header,
@@ -97,9 +95,7 @@ class DataHandler{
             let resp_header=[];
             try{
                 resp_header=JSON.parse(item.resp_header);
-            }catch(e){
-                console.error(e);
-            }
+            }catch(e){}
             return{
                 ...item,
                 resp_header,
