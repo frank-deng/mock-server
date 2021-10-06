@@ -1,6 +1,7 @@
 const httpServer=require('./httpServer');
 const url=require('url');
 const DB=require('./dataHandler');
+const AsyncFunction = Object.getPrototypeOf(async function(){}).constructor;
 module.exports=class extends httpServer{
     async handler(request,response){
         try{
@@ -27,15 +28,6 @@ module.exports=class extends httpServer{
                 return;
             }
 
-            //检测内容是否为JSON
-            let isJSON=false;
-            try{
-                if(matched.resp_content){
-                    JSON.parse(matched.resp_content);
-                    isJSON=true;
-                }
-            }catch(e){}
-
             //准备默认的返回头，包括跨域操作
             let headers={
                 'Access-Control-Allow-Methods':request.method,
@@ -53,6 +45,15 @@ module.exports=class extends httpServer{
                     console.error(e);
                 }
             }
+
+            //检测内容是否为JSON
+            let isJSON=false;
+            try{
+                if(matched.resp_content && 2!=matched.resp_type){
+                    JSON.parse(matched.resp_content);
+                    isJSON=true;
+                }
+            }catch(e){}
             
             //JSON内容相关的默认header加上
             if(isJSON){
@@ -82,6 +83,25 @@ module.exports=class extends httpServer{
                     continue;
                 }
                 response.setHeader(key,headers[key]);
+            }
+
+            //是否需要通过代码生成返回内容
+            if(2==matched.resp_type){
+                try{
+                    let respBody=await (new AsyncFunction(matched.resp_content))({
+                        request,
+                        response
+                    });
+                    if(respBody && !response.writableFinished){
+                        response.writeHead(200);
+                        response.end('object'==typeof(respBody) ? JSON.stringify(respBody,null,2) : String(respBody));
+                    }
+                }catch(e){
+                    console.error(e);
+                    response.writeHead(500);
+                    response.end(String(e));
+                }
+                return;
             }
             response.writeHead(matched.resp_code);
             response.end(matched.resp_content);
