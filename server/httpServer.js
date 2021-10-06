@@ -49,9 +49,13 @@ module.exports=class{
                 });
             });
         }
-        await this.beforeRequest({path,body,request,response});
+
+        let bodyNew=await this.beforeRequest({path,body,request,response});
         if(response.writableFinished){
             return;
+        }
+        if(undefined!==bodyNew){
+            body=bodyNew;
         }
         let data=await func({path,body,request,response});
         await this.afterRequest({path,body,request,response});

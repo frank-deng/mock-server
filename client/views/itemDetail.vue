@@ -90,14 +90,16 @@ function open(data={}){
 }
 async function doSubmit(){
     let resp=null;
+    let postData=new FormData();
+    postData.append('conf',JSON.stringify({
+        ...state,
+        resp_content:undefined
+    }));
+    postData.append('data',state.resp_content);
     if(controller.editMode){
-        resp=await updateItem({
-            ...state
-        });
+        resp=await updateItem(postData);
     }else{
-        resp=await addItem({
-            ...state
-        });
+        resp=await addItem(postData);
     }
     if(0!=Number(resp.data.code)){
         ElMessage.error(resp.data.message);

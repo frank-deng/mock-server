@@ -1,3 +1,4 @@
+const multipart=require('simple-multipart/parse');
 const httpServer=require('./httpServer');
 const DB=require('./dataHandler');
 module.exports=class extends httpServer{
@@ -21,10 +22,32 @@ module.exports=class extends httpServer{
             response.end();
             return;
         }
+        //要把multipart/form-data解开来
+        try{
+            let contentType=request.headers['content-type'];
+            if(-1 == contentType.indexOf('multipart/form-data')){
+                return;
+            }
+            return multipart({body});
+        }catch(e){
+            console.error(e);
+        }
     }
     addHandler=async({body,request,response})=>{
         let db=DB.get();
-        db.add(JSON.parse(body));
+        let data={};
+        for(let item of body){
+            switch(item.name){
+                case 'conf':
+                    console.log(item);
+                    Object.assign(data,JSON.parse(item.content));
+                break;
+                case 'data':
+                    data.resp_content=item.content;
+                break;
+            }
+        }
+        db.add(data);
         DB.getCache().update(db.listAll());
         response.end(JSON.stringify({
             code:0,
@@ -56,7 +79,19 @@ module.exports=class extends httpServer{
         }
     }
     updateHandler=async({path,body,request,response})=>{
-        let db=DB.get(), data=JSON.parse(body);
+        let db=DB.get();
+        let data={};
+        for(let item of body){
+            switch(item.name){
+                case 'conf':
+                    console.log(item);
+                    Object.assign(data,JSON.parse(item.content));
+                break;
+                case 'data':
+                    data.resp_content=item.content;
+                break;
+            }
+        }
         if(!db.update(data.id,data)){
             return {
                 code:2,

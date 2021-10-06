@@ -1,8 +1,6 @@
 import request from './request';
 export async function addItem(data){
-    return await request.post(`add`,{
-        ...data
-    });
+    return await request.post(`add`,data);
 }
 export async function deleteItem(id){
     return await request.get(`delete`,{
@@ -12,9 +10,7 @@ export async function deleteItem(id){
     });
 }
 export async function updateItem(data){
-    return await request.post(`update`,{
-        ...data
-    });
+    return await request.post(`update`,data);
 }
 export async function updateItemEnabled(id,enabled){
     return await request.get(`updateItemEnabled`,{
