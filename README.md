@@ -1,37 +1,21 @@
-# Mock Server
+Mock Server
+===========
 
-#### 介绍
-A mock server implemented in NodeJS.
+一款简单的Mock服务器，可用于前端开发和后端开发工作的并行化。
 
-#### 软件架构
-软件架构说明
+可使用预先准备好的数据作为返回内容，也可直接使用代码生成内容。
 
+通过管理页面可编辑Mock服务器配置，编辑完成后的结果立即生效，无需重启Mock服务器。
 
-#### 安装教程
+启动
+----
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+    npm run start-client
+    npm start
 
-#### 使用说明
+使用
+----
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+管理页面：`http://localhost:8081`
+管理接口：`http://localhost:8082`
+Mock服务器：`http://localhost:8083`
