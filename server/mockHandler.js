@@ -104,12 +104,7 @@ module.exports=class extends httpServer{
                 return;
             }
             response.writeHead(matched.resp_code);
-            if(matched.resp_content instanceof Buffer){
-                response.write(matched.resp_content,'binary');
-                response.end(null,'binary');
-            }else{
-                response.end(matched.resp_content);
-            }
+            response.end(matched.resp_content);
         }catch(e){
             console.error(e);
         }
