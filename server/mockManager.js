@@ -1,4 +1,5 @@
 const multipart=require('simple-multipart/parse');
+const multipart2=require('multipart-form-parser');
 const httpServer=require('./httpServer');
 const DB=require('./dataHandler');
 module.exports=class extends httpServer{
@@ -28,7 +29,11 @@ module.exports=class extends httpServer{
             if(-1 == contentType.indexOf('multipart/form-data')){
                 return;
             }
-            return multipart({body});
+            let data=multipart({body}), rawData=multipart2.Parse(body,multipart2.getBoundary(contentType));
+            data.forEach((item,i)=>{
+                item.content=rawData[i].data;
+            });
+            return data;
         }catch(e){
             console.error(e);
         }
@@ -39,7 +44,6 @@ module.exports=class extends httpServer{
         for(let item of body){
             switch(item.name){
                 case 'conf':
-                    console.log(item);
                     Object.assign(data,JSON.parse(item.content));
                 break;
                 case 'data':
@@ -84,8 +88,7 @@ module.exports=class extends httpServer{
         for(let item of body){
             switch(item.name){
                 case 'conf':
-                    console.log(item);
-                    Object.assign(data,JSON.parse(item.content));
+                    Object.assign(data,JSON.parse(item.content.toString()));
                 break;
                 case 'data':
                     data.resp_content=item.content;

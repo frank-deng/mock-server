@@ -22,7 +22,8 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label='返回内容'>
-                <el-input type='textarea' v-model='state.resp_content'></el-input>
+                <el-button v-if='1==state.resp_type' @click='doSelectFile'>上传文件</el-button>
+                <el-input v-else type='textarea' v-model='state.resp_content'></el-input>
             </el-form-item>
         </el-form>
         <template #footer>
@@ -38,6 +39,7 @@ import { computed, reactive } from "@vue/reactivity";
 import {addItem,updateItem} from '@/api/main.js';
 import { watch } from '@vue/runtime-core';
 import headerEditor from './headerEditor.vue';
+import selectFiles from 'select-files';
 
 const controller=reactive({
     resolve:null,
@@ -113,6 +115,10 @@ async function doSubmit(){
         reject:null,
         display:false
     });
+}
+async function doSelectFile(){
+    let files=await selectFiles();
+    state.resp_content=files[0];
 }
 defineExpose({
     open

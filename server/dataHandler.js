@@ -40,6 +40,7 @@ class DataHandler{
         return info.changes;
     }
     update(id,data){
+        console.log('保存的内容',data.resp_content);
         let info=this.__db.prepare(`update ${DataHandler.TABLE_NAME} set
             enabled=@enabled,
             match_type=@match_type,

@@ -49,7 +49,7 @@ module.exports=class extends httpServer{
             //检测内容是否为JSON
             let isJSON=false;
             try{
-                if(matched.resp_content && 2!=matched.resp_type){
+                if(matched.resp_content && 0==matched.resp_type){
                     JSON.parse(matched.resp_content);
                     isJSON=true;
                 }
@@ -104,7 +104,12 @@ module.exports=class extends httpServer{
                 return;
             }
             response.writeHead(matched.resp_code);
-            response.end(matched.resp_content);
+            if(matched.resp_content instanceof Buffer){
+                response.write(matched.resp_content,'binary');
+                response.end(null,'binary');
+            }else{
+                response.end(matched.resp_content);
+            }
         }catch(e){
             console.error(e);
         }
